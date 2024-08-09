@@ -84,6 +84,7 @@ const select = {
       thisProduct.formInputs = thisProduct.form.querySelectorAll(select.all.formInputs);
       thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
+      thisProduct.imageWrapper = thisProduct.element.querySelector(select.menuProduct.imageWrapper);
     }
 
     initAccordion(){
@@ -146,19 +147,28 @@ const select = {
           // determine option value, e.g. optionId = 'olives', option = { label: 'Olives', price: 2, default: true }
           const option = param.options[optionId];
           console.log(optionId, option);
+
+          const optionSelected = formData[paramId] && formData[paramId].includes(optionId);
           //no z tym to miałem problem żeby dobrze zrozumieć, muszę to jeszcze poćwiczyć!
           // check if there is param with a name of paramId in formData and if it includes optionId
-          if(formData[paramId] && formData[paramId].includes(optionId)) {
-            // check if the option is not default
-            if(!option.default) {
-              // add option price to price variable
+          if (optionSelected) {
+            if (!option.default) {
               price += option.price;
             }
           } else {
-            // check if the option is default
-            if(option.default) {
-              // reduce price variable
+            // Reduce price variable if the option is default and not selected
+            if (option.default) {
               price -= option.price;
+            }
+          }
+          //szukamy obrazu :/ 
+          const optionImage = thisProduct.imageWrapper.querySelector('.' + paramId + '-' + optionId); //masakra 
+
+          if (optionImage) { // te ify już łatwiej
+            if (optionSelected) {
+              optionImage.classList.add(classNames.menuProduct.imageVisible); // z materiałów wcześniej i poradnika i youtube
+            } else {
+              optionImage.classList.remove(classNames.menuProduct.imageVisible); //mam chyba mały kryzys bo idzie jak krew z nosa
             }
           }
         }
