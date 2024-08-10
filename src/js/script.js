@@ -134,24 +134,24 @@ const select = {
       });
     }
 
-    initOrderForm () { // nie kąbinuj bo potem nie działa, czytaj uważnie polecenia!!!!
+    initOrderForm () {
       const thisProduct = this;
-      console.log('initOrderFrom', thisProduct);
-
+    
       thisProduct.form.addEventListener('submit', function(event){
         event.preventDefault();
         thisProduct.processOrder();
       });
-      
+    
       for(let input of thisProduct.formInputs){
         input.addEventListener('change', function(){
           thisProduct.processOrder();
         });
       }
-      
+    
       thisProduct.cartButton.addEventListener('click', function(event){
         event.preventDefault();
         thisProduct.processOrder();
+        thisProduct.addToCart();
       });
     }
 
@@ -202,8 +202,8 @@ const select = {
           }
         }
       }
-      price *= thisProduct.amountWidget.value;
-      // update calculated price in the HTML
+      thisProduct.priceSingle = price;
+      thisProduct.priceSingle = price / thisProduct.amountWidget.value;
       thisProduct.priceElem.innerHTML = price;
     }
 
@@ -215,7 +215,54 @@ const select = {
         thisProduct.processOrder();
       });
     }
+
+    addToCart() {
+      const thisProduct = this;
+    
+      const productData = thisProduct.prepareCartProduct(); 
+      app.cart.add(productData);
+    }
+    
+    prepareCartProduct() {
+      const thisProduct = this;
+      const productSummary = {
+        id: thisProduct.id,
+        name: thisProduct.data.name, 
+        amount: thisProduct.amountWidget.value,
+        priceSingle: thisProduct.priceSingle,
+        price: thisProduct.priceSingle * thisProduct.amountWidget.value,
+        params: thisProduct.prepareCartProductParams()
+      };
+      return productSummary;
+    }
+
+    prepareCartProductParams() {
+      const thisProduct = this;
+      const formData = utils.serializeFormToObject(thisProduct.form);
+      const params = {};
+    
+      for(let paramId in thisProduct.data.params) {
+        const param = thisProduct.data.params[paramId];
+    
+        params[paramId] = {
+          label: param.label,
+          options: {}
+        };
+    
+        for(let optionId in param.options) {
+          const option = param.options[optionId];
+          const optionSelected = formData[paramId] && formData[paramId].includes(optionId);
+          //sprytne
+          if(optionSelected) {
+            params[paramId].options[optionId] = option.label;
+          }
+        }
+      }
+      return params;
+    }
   }
+
+
 
   class AmountWidget {
     constructor (element) {
@@ -240,7 +287,6 @@ const select = {
       thisWidget.element = element;
       thisWidget.input = thisWidget.element.querySelector(select.widgets.amount.input);
       thisWidget.linkDecrease = thisWidget.element.querySelector(select.widgets.amount.linkDecrease);
-      thisWidget.linkIncrease = thisWidget.element.querySelector(select.widgets.amount.linkIncrease);
     }
 
     setValue(newValue) {
@@ -288,7 +334,7 @@ const select = {
     }
 
   }
-  
+  //kolega co pracuje jako webdwveloper trochę mi podpowiedział
   class Cart { //znow to samo!!! czytaj ze zrozumieniem i nie kombinuj, to musia działać!!!!!!!
     constructor(element) {
       const thisCart = this;
@@ -303,7 +349,14 @@ const select = {
       thisCart.dom = {};
       thisCart.dom.wrapper = element;
       thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger);
+      thisCart.dom.productList = thisCart.dom.wrapper.querySelector(select.cart.productList);
+      thisCart.dom.totalNumber = thisCart.dom.wrapper.querySelector(select.cart.totalNumber);
+      //w koszyczku
+      thisCart.dom.subtotalPrice = thisCart.dom.wrapper.querySelector(select.cart.subtotalPrice);
+      thisCart.dom.deliveryFee = thisCart.dom.wrapper.querySelector(select.cart.deliveryFee);
+      thisCart.dom.totalPrice = thisCart.dom.wrapper.querySelector(select.cart.totalPrice);
     }
+  
 
     initActions() {
       const thisCart = this;
@@ -311,6 +364,35 @@ const select = {
       thisCart.dom.toggleTrigger.addEventListener('click', function() {
         thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);
       });
+    }
+
+    add(menuProduct) {
+      const thisCart = this;
+      const generatedHTML = templates.cartProduct(menuProduct);
+      const generatedDOM = utils.createDOMFromHTML(generatedHTML);
+      thisCart.dom.productList.appendChild(generatedDOM);
+      thisCart.products.push(menuProduct);
+      thisCart.update();
+    }
+
+    update() {
+      const thisCart = this;
+  
+      let totalNumber = 0;
+      let subtotalPrice = 0;
+  
+      for(let product of thisCart.products) {
+        totalNumber += product.amount;
+        subtotalPrice += product.price;
+      }
+  
+      const deliveryFee = subtotalPrice > 0 ? settings.cart.defaultDeliveryFee : 0;
+      const totalPrice = subtotalPrice + deliveryFee;
+  
+      thisCart.dom.totalNumber.innerHTML = totalNumber;
+      thisCart.dom.subtotalPrice.innerHTML = subtotalPrice;
+      thisCart.dom.deliveryFee.innerHTML = deliveryFee;
+      thisCart.dom.totalPrice.innerHTML = totalPrice;
     }
   }
 
