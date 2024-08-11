@@ -199,7 +199,7 @@ const select = {
         }
       }
       thisProduct.priceSingle = price;
-      thisProduct.priceSingle = price / thisProduct.amountWidget.value;
+      price *= thisProduct.amountWidget.value; //tu jest winowajca 
       thisProduct.priceElem.innerHTML = price;
     }
 
@@ -208,7 +208,7 @@ const select = {
     
       thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
       thisProduct.amountWidgetElem.addEventListener('updated', function() {
-        thisProduct.processOrder();
+      thisProduct.processOrder();
       });
     }
 
