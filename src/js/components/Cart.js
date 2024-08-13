@@ -72,6 +72,10 @@ class Cart { //znow to samo!!! czytaj ze zrozumieniem i nie kombinuj, to musia d
   
       const deliveryFee = subtotalPrice > 0 ? settings.cart.defaultDeliveryFee : 0;
       const totalPrice = subtotalPrice + deliveryFee;
+
+      thisCart.totalNumber = totalNumber; // Miałeś rację za bardzo kąbinuje i nie przywiazuje uwagi do pierdół a potem sie dziwie ze nic nie działa
+      thisCart.subtotalPrice = subtotalPrice;
+      thisCart.totalPrice = totalPrice;
   
       thisCart.dom.totalNumber.innerHTML = totalNumber;
       thisCart.dom.subtotalPrice.innerHTML = subtotalPrice;
