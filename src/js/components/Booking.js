@@ -4,6 +4,7 @@ import DatePicker from './DatePicker.js';
 import HourPicker from './HourPicker.js';
 
 
+
 class Booking {
   constructor(element) {
     this.render(element);

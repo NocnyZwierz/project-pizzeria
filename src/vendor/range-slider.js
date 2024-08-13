@@ -272,7 +272,9 @@ export default class RangeSlider {
     this.onSlideEventsCount = 0;
     this.needTriggerEvents = false;
     return this;
+
   }
+
 
   destroy() {
     dom.removeAllListenersFromEl(this, this.options.root);
@@ -635,6 +637,7 @@ export default class RangeSlider {
     dom.triggerEvent(this.element, 'input', { origin: this.identifier });
   }
 }
+
 
 // eslint-disable-next-line no-undef
 RangeSlider.version = VERSION;
