@@ -115,6 +115,7 @@ class Booking {
     console.log('Date:', thisBookings.date);
     console.log('Hour:', thisBookings.hour);
     console.log('Booked:', thisBookings.booked);
+    // tu przekazuje dane
   
     let allAvailable = false;
   
@@ -171,6 +172,14 @@ class Booking {
     });
 
     this.dom.hoursAmount.addEventListener('updated', function() {
+      thisBookings.updateDOM();
+    });
+
+    this.dom.datePicker.addEventListener('updated', function() {
+      thisBookings.updateDOM();
+    });
+  
+    this.dom.hourPicker.addEventListener('updated', function() {
       thisBookings.updateDOM();
     });
   }
