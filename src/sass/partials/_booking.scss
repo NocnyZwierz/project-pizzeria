@@ -171,7 +171,6 @@
           background: $color-dark;
           opacity: 0.4;
         }
-  
       }
     }
   
@@ -193,7 +192,10 @@
       top: 180px;
     }
   }
-  
+  // dodanie koloru
+  .selected {
+    border: 2px solid #00ff00; 
+  }
   .booking-options {
     @include flex(row, flex-start, space-between);
     margin: ($base-size * 4) auto;

@@ -6,6 +6,7 @@ import HourPicker from './HourPicker.js';
 
 class Booking {
   constructor(element) {
+    this.selectedTable = null; //zeby wiedzieć czy był wybrany czy nie
     this.render(element);
     this.initWidgets();
     this.getData();
@@ -112,38 +113,42 @@ class Booking {
     thisBookings.date = thisBookings.datePicker.value;
     thisBookings.hour = utils.hourToNumber(thisBookings.hourPicker.value);
   
-    console.log('Date:', thisBookings.date);
-    console.log('Hour:', thisBookings.hour);
-    console.log('Booked:', thisBookings.booked);
-    // tu przekazuje dane
-  
     let allAvailable = false;
   
     if (
       typeof thisBookings.booked[thisBookings.date] == 'undefined'
       ||
       typeof thisBookings.booked[thisBookings.date][thisBookings.hour] == 'undefined'
-    ){
+    ) {
       allAvailable = true;
     }
   
-    for(let table of thisBookings.dom.tables){
+    for (let table of thisBookings.dom.tables) {
       let tableId = table.getAttribute(settings.booking.tableIdAttribute);
-      if(!isNaN(tableId)){
+      if (!isNaN(tableId)) {
         tableId = parseInt(tableId);
       }
   
-      if(
-        !allAvailable
-        &&
+      if (
+        !allAvailable &&
         thisBookings.booked[thisBookings.date][thisBookings.hour].includes(tableId)
-      ){
+      ) {
         table.classList.add(classNames.booking.tableBooked);
       } else {
         table.classList.remove(classNames.booking.tableBooked);
       }
     }
+  
+    // Resetowanie wybranego stolika po zmianie godziny i daty
+    if (thisBookings.selectedTable) {
+      const selectedTableElement = thisBookings.dom.wrapper.querySelector('.selected');
+      if (selectedTableElement) {
+        selectedTableElement.classList.remove('selected');
+      }
+      thisBookings.selectedTable = null;
+    }
   }
+  
 
   render(element) {
     this.dom = {};
@@ -156,25 +161,50 @@ class Booking {
     this.dom.datePicker = this.dom.wrapper.querySelector(select.widgets.datePicker.wrapper);
     this.dom.hourPicker = this.dom.wrapper.querySelector(select.widgets.hourPicker.wrapper);
 
-    this.dom.tables = this.dom.wrapper.querySelectorAll(select.booking.tables);
+    this.dom.tables = this.dom.wrapper.querySelectorAll(select.booking.tables); // pod stoliczek
+  }
+
+  selectTable(event) { // obsługa stoliczka
+    const thisBookings = this;
+  
+    const clickedElement = event.target; // pobieramy element który został kliknięty
+    const tableId = clickedElement.getAttribute(settings.booking.tableIdAttribute); // pobieramy Id stolika kliknietego
+    // sprawdzamy czy stolik jest zajęty
+    if (!clickedElement.classList.contains(classNames.booking.tableBooked)) {
+      if (thisBookings.selectedTable == tableId) { // Sprawdzamy, czy aktualnie wybrany stolik jest tym samym, który został kliknięty
+        clickedElement.classList.remove('selected'); // Jeśli tak, to odznaczamy ten stolik (usuwamy klasę 'selected')
+        thisBookings.selectedTable = null;  // Resetujemy wartość `selectedTable` do `null`, ponieważ żaden stolik nie jest teraz wybrany
+      } else {
+        if (thisBookings.selectedTable != null) {// Jeśli inny stolik był już wybrany, usuwamy z niego klasę 'selected'
+          const prevSelectedTable = this.dom.wrapper.querySelector('.selected'); // Znajdujemy poprzednio wybrany stolik za pomocą selektora
+          if (prevSelectedTable) {  // Jeśli taki stolik istnieje, usuwamy z niego klasę 'selected'
+            prevSelectedTable.classList.remove('selected');
+          }
+        }
+        clickedElement.classList.add('selected'); // Dodajemy klasę 'selected' do nowo klikniętego stolika
+        thisBookings.selectedTable = tableId; // Ustawiamy `selectedTable` na ID nowo wybranego stolika
+      }
+    } else { // komunikat na stronie że zajęte
+      alert('Stolik zajęty!');
+    } // no z tym to się namęczyłem ale jakoś działa
   }
 
   initWidgets() {
     const thisBookings = this;
-
+  
     this.peopleAmountWidget = new AmountWidget(this.dom.peopleAmount);
     this.hoursAmountWidget = new AmountWidget(this.dom.hoursAmount);
     this.datePicker = new DatePicker(this.dom.datePicker);
     this.hourPicker = new HourPicker(this.dom.hourPicker);
-
+  
     this.dom.peopleAmount.addEventListener('updated', function() {
       thisBookings.updateDOM();
     });
-
+  
     this.dom.hoursAmount.addEventListener('updated', function() {
       thisBookings.updateDOM();
     });
-
+  
     this.dom.datePicker.addEventListener('updated', function() {
       thisBookings.updateDOM();
     });
@@ -182,7 +212,15 @@ class Booking {
     this.dom.hourPicker.addEventListener('updated', function() {
       thisBookings.updateDOM();
     });
+  
+    // Podpięcie event listenera do wszystkich stolików
+    for (let table of thisBookings.dom.tables) {
+      table.addEventListener('click', function(event) {
+        thisBookings.selectTable(event);
+      });
+    }
   }
+  
 }
 
 export default Booking;
