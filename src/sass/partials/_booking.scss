@@ -95,6 +95,11 @@
       color: lighten($color-dark, 60%);
     }
   }
+
+  .flatpickr-months .flatpickr-month { //dlaczego nie działasz?
+    background-color: #ffffff;
+    color: #000000;
+  }
   
   .floor-plan {
     position: relative;
@@ -202,3 +207,5 @@
     @include flex(row, flex-start, space-between);
     margin: ($base-size * 4) auto;
   }
+
+  
