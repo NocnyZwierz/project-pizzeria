@@ -194,11 +194,11 @@ class Booking {
 
     const url = settings.db.url + '/' + settings.db.bookings;
 
-    // tak jak w cart
+    // tak jak w cart, pamieta co i po co pobierasz i skąd
     const payload = {
       date: thisBooking.datePicker.value,
       hour: thisBooking.hourPicker.value,
-      table: thisBooking.selectedTable ? parseInt(thisBooking.selectedTable) : null,
+      table: thisBooking.selectedTable ? parseInt(thisBooking.selectedTable) : null, // operator rójargumentowy bardzo przydatny, https://www.youtube.com/watch?v=s4sB1hm73tw
       duration: thisBooking.hoursAmountWidget.value,
       ppl: thisBooking.peopleAmountWidget.value,
       starters: [],
