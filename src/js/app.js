@@ -2,6 +2,7 @@ import { settings, select, classNames, templates } from "./settings.js";
 import Product from "./components/Product.js";
 import Cart from "./components/Cart.js";
 import Booking from "./components/Booking.js";
+import Home from './components/Home.js';
 
 const app = {
   initPages: function () {
@@ -94,10 +95,11 @@ const app = {
     }
   },
 
-  initHomeContent: function() {
+  initHomeContent() {
     const homeContainer = document.querySelector('.home-wrapper');
-    const generatedHTML = templates.homeContent(); // Używamy Handlebars do wygenerowania HTML
-    homeContainer.innerHTML = generatedHTML;
+    if (homeContainer) {
+      new Home(homeContainer);
+    }
   },
 
   init: function(){
