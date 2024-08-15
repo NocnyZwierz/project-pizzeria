@@ -95,7 +95,7 @@ const app = {
   },
 
   initHomeContent: function() {
-    const homeContainer = document.querySelector('#home');
+    const homeContainer = document.querySelector('.home-wrapper');
     const generatedHTML = templates.homeContent(); // Używamy Handlebars do wygenerowania HTML
     homeContainer.innerHTML = generatedHTML;
   },
