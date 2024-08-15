@@ -94,6 +94,12 @@ const app = {
     }
   },
 
+  initHomeContent: function() {
+    const homeContainer = document.querySelector('#home');
+    const generatedHTML = templates.homeContent(); // Używamy Handlebars do wygenerowania HTML
+    homeContainer.innerHTML = generatedHTML;
+  },
+
   init: function(){
     const thisApp = this;
     console.log('*** App starting ***');
@@ -106,6 +112,7 @@ const app = {
     thisApp.initData();  // Tylko initData, initMenu jest wywoływane wewnątrz initData
     thisApp.initCart();
     thisApp.initBooking();
+    thisApp.initHomeContent();
   },
 };
   

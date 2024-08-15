@@ -1,0 +1,62 @@
+#pages {
+    > * {
+      display: none;
+    }
+  
+    > .active {
+      display: block;
+    }
+  }
+  
+  .home-wrapper {
+    margin: 3.5rem auto;
+    padding: 6rem 4rem;
+    background: #f7f1e3; /* Użycie tego samego koloru tła co w sekcji booking */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Dopasowanie obramowania */
+    border-radius: 8px; /* Dopasowanie promienia zaokrąglenia */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Cień dla efektu unoszenia */
+  }
+  
+  .home-widget {
+    transform: opacity 500ms;
+  
+    &.loading {
+      opacity: 0.25;
+    }
+  }
+  
+  .home-header {
+    text-align: center;
+    margin-bottom: 40px;
+  
+    &__buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+  
+      .btn-primary {
+        padding: 15px 30px;
+        background-color: #ff5e5e;
+        color: #fff;
+        text-transform: uppercase;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+  
+        &:hover {
+          background-color: #e55353;
+        }
+      }
+    }
+  
+    &__hours {
+      background-color: #ff5e5e;
+      color: #fff;
+      padding: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 5px;
+    }
+  }
+  
