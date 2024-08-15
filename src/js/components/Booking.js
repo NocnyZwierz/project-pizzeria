@@ -189,6 +189,49 @@ class Booking {
     } // no z tym to się namęczyłem ale jakoś działa
   }
 
+  sendBooking() {
+    const thisBooking = this;
+
+    const url = settings.db.url + '/' + settings.db.bookings;
+
+    // tak jak w cart
+    const payload = {
+      date: thisBooking.datePicker.value,
+      hour: thisBooking.hourPicker.value,
+      table: thisBooking.selectedTable ? parseInt(thisBooking.selectedTable) : null,
+      duration: thisBooking.hoursAmountWidget.value,
+      ppl: thisBooking.peopleAmountWidget.value,
+      starters: [],
+      phone: thisBooking.dom.wrapper.querySelector('[name="phone"]').value,
+      address: thisBooking.dom.wrapper.querySelector('[name="address"]').value,
+    };
+
+    // Pobranie wybranych starterów
+    const starters = thisBooking.dom.wrapper.querySelectorAll('[name="starter"]:checked');
+    for (let starter of starters) {
+      payload.starters.push(starter.value);
+    }
+    //struktura podobna jak w cart tylko trzeba było dostosować do nowej funkcji
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    };
+
+    fetch(url, options)
+      .then((response) => response.json())
+      .then((parsedResponse) => {
+        console.log('Booking response:', parsedResponse);
+
+        // Dodanie rezerwacji do thisBookings.booked przy użyciu makeBooked
+        thisBooking.makeBooked(payload.date, payload.hour, payload.duration, payload.table);
+
+        thisBooking.updateDOM();
+      });
+  }
+
   initWidgets() {
     const thisBookings = this;
   
@@ -212,7 +255,11 @@ class Booking {
     this.dom.hourPicker.addEventListener('updated', function() {
       thisBookings.updateDOM();
     });
-  
+    // Podobnie jak z wysyłką z cart
+    this.dom.wrapper.querySelector('.booking-form').addEventListener('submit', function(event) {
+      event.preventDefault(); // zapobiegamy domyślnej akcji submit
+      thisBookings.sendBooking();
+    });
     // Podpięcie event listenera do wszystkich stolików
     for (let table of thisBookings.dom.tables) {
       table.addEventListener('click', function(event) {

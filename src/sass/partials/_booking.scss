@@ -194,8 +194,10 @@
   }
   // dodanie koloru
   .selected {
-    border: 2px solid #00ff00; 
+    background-color: rgba(41, 191, 41, 0.3) !important; // coś nadpisje sztuczke poznałem na studiach podczas zajęć "Zaawansowane technologie webowe"
+    border: none !important;
   }
+  
   .booking-options {
     @include flex(row, flex-start, space-between);
     margin: ($base-size * 4) auto;
