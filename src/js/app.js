@@ -96,9 +96,10 @@ const app = {
   },
 
   initHomeContent() {
+    const thisApp = this;
     const homeContainer = document.querySelector('.home-wrapper');
     if (homeContainer) {
-      new Home(homeContainer);
+      new Home(homeContainer, thisApp);
     }
   },
 
