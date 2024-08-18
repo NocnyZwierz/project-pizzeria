@@ -25,13 +25,18 @@ class Home {
 
   initWidgets() {
     const thisHome = this;
-    // doslownie z instrukci
-    var elem = document.querySelector('.main-carousel');
-    var flkty = new Flickity( elem, {
-      // options
-      cellAlign: 'left',
-      contain: true
-    });
+      // doslownie z instrukci
+      var elem = document.querySelector('.main-carousel');
+      //musi tak być bo nie chce odpalić projektu
+      // eslint-disable-next-line no-undef, no-unused-vars
+      var flkty = new Flickity( elem, {
+        // options
+        cellAlign: 'left',
+        contain: true,
+        wrapAround: true,
+        autoPlay: 3000,
+        prevNextButtons: false,
+      });
 
     thisHome.dom.orderOnline.addEventListener('click', function () {
       window.location.hash = '#/order';
